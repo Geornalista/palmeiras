@@ -1,3 +1,4 @@
-streamlit==1.1.0 
+streamlit==1.13.0 
 pandas==1.2.4
-protobuf==3.20.1
+protobuf==3.20.*
+altair==4.1.0

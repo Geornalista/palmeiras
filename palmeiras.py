@@ -14,7 +14,7 @@ def add_bg_from_url():
          f"""
          <style>
          .stApp {{
-             background-image: url("https://apostas.gazetaesportiva.com/static/wp/2022/02/palmeiras-gz.webp");
+             background-image: url("https://sep-bucket-prod.s3.amazonaws.com/wp-content/uploads/2019/08/9219-wallpaper-historico_op11-2-768x432.jpg");
              background-attachment: fixed;
              background-size: cover
          }}

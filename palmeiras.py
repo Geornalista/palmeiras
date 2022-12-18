@@ -75,7 +75,7 @@ def busca_escalacao(jogadores):
         texto = jogador+' '
       else:
         texto = texto+', '+jogador
-    st.write(texto)
+    st.markdown(texto)
 
   st.sidebar.write(f'Total de Partidas: {len(jogos)}')
 

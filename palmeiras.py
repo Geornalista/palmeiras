@@ -9,6 +9,22 @@ st.sidebar.header(
     """
 )
 
+def add_bg_from_url():
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background-image: url("https://apostas.gazetaesportiva.com/static/wp/2022/02/palmeiras-gz.webp");
+             background-attachment: fixed;
+             background-size: cover
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
+
+add_bg_from_url() 
+
 file = 'palmeiras.csv'
 df_jogos = pd.read_csv(file,sep=';',skipinitialspace=True)
 

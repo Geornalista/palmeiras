@@ -23,7 +23,7 @@ def add_bg_from_url():
          unsafe_allow_html=True
      )
 
-add_bg_from_url() 
+#add_bg_from_url() 
 
 file = 'palmeiras.csv'
 df_jogos = pd.read_csv(file,sep=';',skipinitialspace=True)

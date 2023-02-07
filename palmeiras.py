@@ -8,6 +8,9 @@ st.sidebar.header(
 
     """
 )
+tab1,tab2 = st.tabs([
+          "🏆 Estatísticas",
+          "🏆 Escalações"])
 
 file = 'palmeiras1.csv'
 df_jogos = pd.read_csv(file,sep=';',skipinitialspace=True)
@@ -92,23 +95,40 @@ def busca_escalacao(jogadores):
   for item in jogos:
     jogo = [s.title() for s in list(lista_jogos[item]) if str(s) != 'nan']
     jogo = [x.replace('-', ' ') for x in jogo]
-    st.subheader(f'Partida {item+1}: {lista_datas[item][0]} {lista_datas[item][3].title()} {lista_datas[item][5]} X {lista_datas[item][6]} {lista_datas[item][4].title()} ({lista_datas[item][1].title()} - Estádio: {lista_datas[item][2].title()}) ')
+    with tab2:
+      st.subheader(f'Partida {item+1}: {lista_datas[item][0]} {lista_datas[item][3].title()} {lista_datas[item][5]} X {lista_datas[item][6]} {lista_datas[item][4].title()} ({lista_datas[item][1].title()} - Estádio: {lista_datas[item][2].title()}) ')
 
     for jogador in jogo:
       if jogador == jogo[0]:
         texto = jogador+' '
       else:
         texto = texto+', '+jogador
-    st.write(texto)
+    with tab2:
+      st.write(texto)
 
-  st.sidebar.write(f'Total de Partidas: {len(jogos)}')
   return(camp,estad,res,palm,GM0,GS0)
 
 if st.sidebar.button('Procurar'):
   camp,estad,res,palm,GM,GS = busca_escalacao(escalacao)
-  st.sidebar.write(f'Gols Marcados: {GM}')
-  st.sidebar.write(f'Gols Sofridos: {GS}')
-  st.sidebar.write(f'Palmeiras')
-  st.sidebar.write(f"Vitórias: {palm.count('V')}")
-  st.sidebar.write(f"Empates: {palm.count('E')}")
-  st.sidebar.write(f"Derrotas: {palm.count('D')}")
+  with tab1:
+    col1, col2, col3 = st.columns(3)
+    with col1:
+      st.subheader(f'Palmeiras')
+      st.write(f'Total de Partidas: {len(camp)}')
+      st.write(f"Vitórias: {palm.count('V')}")
+      st.write(f"Empates: {palm.count('E')}")
+      st.write(f"Derrotas: {palm.count('D')}")
+      st.write(f'Total de Gols Marcados: {GM}')
+      st.write(f'Total de Gols Sofridos: {GS}')
+
+    with col2:
+      st.subheader(f'Estádios')
+      campos = [[x,estad.count(x)] for x in set(estad)]
+      for campo in campos:
+        st.write(f'{campo[0]}: {campo[1]} vezes')
+    with col3:
+      st.subheader(f'Campeonatos')
+      champs = [[x,camp.count(x)] for x in set(camp)]
+      for champ in champs:
+        st.write(f'{champ[0]}: {champ[1]} vezes')
+    

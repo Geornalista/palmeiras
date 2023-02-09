@@ -65,11 +65,13 @@ def result(i):
   if lista_datas[i][3] == 'Palmeiras' or lista_datas[i][3] == 'Palestra Italia':
     GM = lista_datas[i][5]
     GS = lista_datas[i][6]
+    adv = lista_datas[i][4]
   else:
     GM = lista_datas[i][6]
     GS = lista_datas[i][5]
+    adv = lista_datas[i][3]
 
-  return res,palm,GM,GS
+  return res,adv,palm,GM,GS
 
 def busca_escalacao(jogadores):
   flag = 0
@@ -77,6 +79,7 @@ def busca_escalacao(jogadores):
   camp=[]
   estad=[]
   res=[]
+  adv=[]
   palm=[]
   GM0 = 0
   GS0 = 0
@@ -84,8 +87,9 @@ def busca_escalacao(jogadores):
   for i in range(njogos):
     if set(jogadores).issubset(lista_jogos[i]):
       flag=1
-      res1,palm1,GM1,GS1 = result(i)
+      res1,adv1,palm1,GM1,GS1 = result(i)
       res.append(res1)
+      adv.append(adv1)
       palm.append(palm1)
       camp.append(lista_datas[i][1])
       estad.append(lista_datas[i][2])
@@ -111,21 +115,14 @@ def busca_escalacao(jogadores):
     with tab2:
       st.write(texto)
 
-  return(camp,estad,res,palm,GM0,GS0)
+  return(camp,estad,res,adv,palm,GM0,GS0)
 
 if st.sidebar.button('Procurar'):
-  camp,estad,res,palm,GM,GS = busca_escalacao(escalacao)
+  camp,estad,res,adv,palm,GM,GS = busca_escalacao(escalacao)
   with tab1:
     col1, col2, col3 = st.columns(3)
     with col1:
       st.subheader(f'🇳🇬 Palmeiras')
-
-      #st.write(f'Total de Partidas: {len(camp)}')
-      #st.write(f"Vitórias: {palm.count('V')}")
-      #st.write(f"Empates: {palm.count('E')}")
-      #st.write(f"Derrotas: {palm.count('D')}")
-      #st.write(f'Total de Gols Marcados: {GM}')
-      #st.write(f'Total de Gols Sofridos: {GS}')
 
       d = {'COL1': ['Total de Partidas','Vitórias','Empates','Derrotas', 'Total de Gols Marcados','Total de Gols Sofridos' ],
            'COL2': [len(camp),palm.count('V'),palm.count('E'),palm.count('D'),GM,GS ]}
@@ -139,6 +136,32 @@ if st.sidebar.button('Procurar'):
       go = builder.build()
 
       grid_response = AgGrid(df,gridOptions = go,
+      fit_columns_on_grid_load=True,
+      theme="alpine",
+      columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+      allow_unsafe_jscode=True)
+
+      st.subheader(f'🥊 Adversários')
+      advs = [[x,adv.count(x)] for x in set(adv)]
+      t1 = []
+      t2 = []
+      for i in range(len(advs)):
+        t1.append(advs[i][0])
+        t2.append(advs[i][1])
+
+      d0 = {'COL1': t1,
+            'COL2': t2}
+      df0 = pd.DataFrame(data=d0)
+      df0 = df0.sort_values(df0.columns[1],ascending=False)
+
+      builder = GridOptionsBuilder.from_dataframe(df0)
+      builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
+      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=100)
+      builder.configure_column("COL2", header_name="", editable=False,width=50)
+
+      go0 = builder.build()
+
+      grid_response = AgGrid(df0,gridOptions = go0,
       fit_columns_on_grid_load=True,
       theme="alpine",
       columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
@@ -170,7 +193,7 @@ if st.sidebar.button('Procurar'):
       fit_columns_on_grid_load=True,
       theme="alpine",
       columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
-      allow_unsafe_jscode=True)      
+      allow_unsafe_jscode=True)
 
     with col3:
       st.subheader(f'🥅 Campeonatos')

@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode,ColumnsAutoSizeMode
 
 st.set_page_config(
   page_title='ESCALAÇÕES DO PALMEIRAS',
@@ -119,21 +120,84 @@ if st.sidebar.button('Procurar'):
     with col1:
       st.subheader(f'🇳🇬 Palmeiras')
 
-      st.write(f'Total de Partidas: {len(camp)}')
-      st.write(f"Vitórias: {palm.count('V')}")
-      st.write(f"Empates: {palm.count('E')}")
-      st.write(f"Derrotas: {palm.count('D')}")
-      st.write(f'Total de Gols Marcados: {GM}')
-      st.write(f'Total de Gols Sofridos: {GS}')
+      #st.write(f'Total de Partidas: {len(camp)}')
+      #st.write(f"Vitórias: {palm.count('V')}")
+      #st.write(f"Empates: {palm.count('E')}")
+      #st.write(f"Derrotas: {palm.count('D')}")
+      #st.write(f'Total de Gols Marcados: {GM}')
+      #st.write(f'Total de Gols Sofridos: {GS}')
+
+      d = {'COL1': ['Total de Partidas','Vitórias','Empates','Derrotas', 'Total de Gols Marcados','Total de Gols Sofridos' ],
+           'COL2': [len(camp),palm.count('V'),palm.count('E'),palm.count('D'),GM,GS ]}
+      df = pd.DataFrame(data=d)
+
+      builder = GridOptionsBuilder.from_dataframe(df)
+      builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
+      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=100)
+      builder.configure_column("COL2", header_name="", editable=False,width=50)
+
+      go = builder.build()
+
+      grid_response = AgGrid(df,gridOptions = go,
+      fit_columns_on_grid_load=True,
+      theme="alpine",
+      columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+      allow_unsafe_jscode=True)
 
     with col2:
       st.subheader(f'🏟 Estádios')
       campos = [[x,estad.count(x)] for x in set(estad)]
-      for campo in campos:
-        st.write(f'{campo[0]}: {campo[1]} vezes')
+      tt1=[]
+      tt2=[]
+      for i in range(len(campos)):
+        tt1.append(campos[i][0])
+        tt2.append(campos[i][1])
+
+      dd = {'COL1': tt1,
+           'COL2': tt2}
+      
+      df1 = pd.DataFrame(data=dd)
+      df1 = df1.sort_values(df1.columns[1],ascending=False)      
+
+      builder = GridOptionsBuilder.from_dataframe(df1)
+      builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
+      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=100)
+      builder.configure_column("COL2", header_name="", editable=False,width=50)
+
+      go1 = builder.build()
+
+      grid_response = AgGrid(df1,gridOptions = go1,
+      fit_columns_on_grid_load=True,
+      theme="alpine",
+      columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+      allow_unsafe_jscode=True)      
+
     with col3:
       st.subheader(f'🥅 Campeonatos')
       champs = [[x,camp.count(x)] for x in set(camp)]
-      for champ in champs:
-        st.write(f'{champ[0]}: {champ[1]} vezes')
+
+      tc1=[]
+      tc2=[]
+      for i in range(len(champs)):
+        tc1.append(champs[i][0])
+        tc2.append(champs[i][1])
+
+      dc = {'COL1': tc1,
+           'COL2': tc2}
+      
+      df2 = pd.DataFrame(data=dc)
+      df2 = df2.sort_values(df2.columns[1],ascending=False)
+
+      builder = GridOptionsBuilder.from_dataframe(df2)
+      builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
+      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=100)
+      builder.configure_column("COL2", header_name="", editable=False,width=50)
+
+      go2 = builder.build()
+
+      grid_response = AgGrid(df2,gridOptions = go2,
+      fit_columns_on_grid_load=True,
+      theme="alpine",
+      columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+      allow_unsafe_jscode=True)
     

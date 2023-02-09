@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
+
+st.set_page_config(
+  page_title='ESCALAÇÕES DO PALMEIRAS',
+  page_icon='⚽',
+  layout="wide")
 
 st.sidebar.header(
     """
@@ -9,8 +13,8 @@ st.sidebar.header(
     """
 )
 tab1,tab2 = st.tabs([
-          "🏆 Estatísticas",
-          "🏆 Escalações"])
+          "📊 Estatísticas",
+          "⚽️ Escalações"])
 
 file = 'palmeiras1.csv'
 df_jogos = pd.read_csv(file,sep=';',skipinitialspace=True)
@@ -96,7 +100,7 @@ def busca_escalacao(jogadores):
     jogo = [s.title() for s in list(lista_jogos[item]) if str(s) != 'nan']
     jogo = [x.replace('-', ' ') for x in jogo]
     with tab2:
-      st.subheader(f'Partida {item+1}: {lista_datas[item][0]} {lista_datas[item][3].title()} {lista_datas[item][5]} X {lista_datas[item][6]} {lista_datas[item][4].title()} ({lista_datas[item][1].title()} - Estádio: {lista_datas[item][2].title()}) ')
+      st.subheader(f'[Partida {item+1}: {lista_datas[item][0]} {lista_datas[item][3].title()} {lista_datas[item][5]} X {lista_datas[item][6]} {lista_datas[item][4].title()} ({lista_datas[item][1].title()} - Estádio: {lista_datas[item][2].title()})]({lista_datas[item][-1]}) ')
 
     for jogador in jogo:
       if jogador == jogo[0]:
@@ -113,7 +117,8 @@ if st.sidebar.button('Procurar'):
   with tab1:
     col1, col2, col3 = st.columns(3)
     with col1:
-      st.subheader(f'Palmeiras')
+      st.subheader(f'🇳🇬 Palmeiras')
+
       st.write(f'Total de Partidas: {len(camp)}')
       st.write(f"Vitórias: {palm.count('V')}")
       st.write(f"Empates: {palm.count('E')}")
@@ -122,12 +127,12 @@ if st.sidebar.button('Procurar'):
       st.write(f'Total de Gols Sofridos: {GS}')
 
     with col2:
-      st.subheader(f'Estádios')
+      st.subheader(f'🏟 Estádios')
       campos = [[x,estad.count(x)] for x in set(estad)]
       for campo in campos:
         st.write(f'{campo[0]}: {campo[1]} vezes')
     with col3:
-      st.subheader(f'Campeonatos')
+      st.subheader(f'🥅 Campeonatos')
       champs = [[x,camp.count(x)] for x in set(camp)]
       for champ in champs:
         st.write(f'{champ[0]}: {champ[1]} vezes')

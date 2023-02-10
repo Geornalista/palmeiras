@@ -13,9 +13,12 @@ st.sidebar.header(
 
     """
 )
-tab1,tab2 = st.tabs([
-          "📊 Estatísticas",
-          "⚽️ Escalações"])
+tab1,tab2,tab3,tab4,tab5 = st.tabs([
+                  "📊 Dados Gerais",
+                  "🥊 Adversários",
+                  "🏟 Estádios",
+                  "🥅 Campeonatos",
+                  "⚽️ Escalações"])
 
 file = 'palmeiras.csv'
 df_jogos = pd.read_csv(file,sep=';',skipinitialspace=True)
@@ -104,7 +107,7 @@ def busca_escalacao(jogadores):
   for item in jogos:
     jogo = [s.title() for s in list(lista_jogos[item]) if str(s) != 'nan']
     jogo = [x.replace('-', ' ') for x in jogo]
-    with tab2:
+    with tab5:
       st.subheader(f'[Partida {item+1}: {lista_datas[item][0]} {lista_datas[item][3].title()} {lista_datas[item][5]} X {lista_datas[item][6]} {lista_datas[item][4].title()} ({lista_datas[item][1].title()} - Estádio: {lista_datas[item][2].title()})]({lista_datas[item][-1]}) ')
 
     for jogador in jogo:
@@ -112,7 +115,7 @@ def busca_escalacao(jogadores):
         texto = jogador+' '
       else:
         texto = texto+', '+jogador
-    with tab2:
+    with tab5:
       st.write(texto)
 
   return(camp,estad,res,adv,palm,GM0,GS0)
@@ -120,55 +123,54 @@ def busca_escalacao(jogadores):
 if st.sidebar.button('Procurar'):
   camp,estad,res,adv,palm,GM,GS = busca_escalacao(escalacao)
   with tab1:
-    col1, col2, col3 = st.columns(3)
-    with col1:
-      st.subheader(f'🇳🇬 Palmeiras')
+    st.subheader(f'🇳🇬 Palmeiras')
 
-      d = {'COL1': ['Total de Partidas','Vitórias','Empates','Derrotas', 'Total de Gols Marcados','Total de Gols Sofridos' ],
-           'COL2': [len(camp),palm.count('V'),palm.count('E'),palm.count('D'),GM,GS ]}
-      df = pd.DataFrame(data=d)
+    d = {'COL1': ['Total de Partidas','Vitórias','Empates','Derrotas', 'Total de Gols Marcados','Total de Gols Sofridos' ],
+          'COL2': [len(camp),palm.count('V'),palm.count('E'),palm.count('D'),GM,GS ]}
+    df = pd.DataFrame(data=d)
 
-      builder = GridOptionsBuilder.from_dataframe(df)
-      builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
-      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=100)
-      builder.configure_column("COL2", header_name="", editable=False,width=50)
+    builder = GridOptionsBuilder.from_dataframe(df)
+    builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
+    builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False)
+    builder.configure_column("COL2", header_name="", editable=False)
 
-      go = builder.build()
+    go = builder.build()
 
-      grid_response = AgGrid(df,gridOptions = go,
-      fit_columns_on_grid_load=True,
-      theme="alpine",
-      columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
-      allow_unsafe_jscode=True)
+    grid_response = AgGrid(df,gridOptions = go,
+    fit_columns_on_grid_load=True,
+    theme="alpine",
+    columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+    allow_unsafe_jscode=True)
 
-      st.subheader(f'🥊 Adversários')
-      advs = [[x,adv.count(x)] for x in set(adv)]
-      t1 = []
-      t2 = []
-      for i in range(len(advs)):
-        t1.append(advs[i][0])
-        t2.append(advs[i][1])
+  with tab2:
+    #st.subheader(f'🥊 Adversários')
+    advs = [[x,adv.count(x)] for x in set(adv)]
+    t1 = []
+    t2 = []
+    for i in range(len(advs)):
+      t1.append(advs[i][0])
+      t2.append(advs[i][1])
 
-      d0 = {'COL1': t1,
-            'COL2': t2}
-      df0 = pd.DataFrame(data=d0)
-      df0 = df0.sort_values(df0.columns[1],ascending=False)
+    d0 = {'COL1': t1,
+          'COL2': t2}
+    df0 = pd.DataFrame(data=d0)
+    df0 = df0.sort_values(df0.columns[1],ascending=False)
 
-      builder = GridOptionsBuilder.from_dataframe(df0)
-      builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
-      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=100)
-      builder.configure_column("COL2", header_name="", editable=False,width=50)
+    builder = GridOptionsBuilder.from_dataframe(df0)
+    builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
+    builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False)
+    builder.configure_column("COL2", header_name="", editable=False)
 
-      go0 = builder.build()
+    go0 = builder.build()
 
-      grid_response = AgGrid(df0,gridOptions = go0,
-      fit_columns_on_grid_load=True,
-      theme="alpine",
-      columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
-      allow_unsafe_jscode=True)
+    grid_response = AgGrid(df0,gridOptions = go0,
+    fit_columns_on_grid_load=True,
+    theme="alpine",
+    columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+    allow_unsafe_jscode=True)
 
-    with col2:
-      st.subheader(f'🏟 Estádios')
+    with tab3:
+      #st.subheader(f'🏟 Estádios')
       campos = [[x,estad.count(x)] for x in set(estad)]
       tt1=[]
       tt2=[]
@@ -184,8 +186,8 @@ if st.sidebar.button('Procurar'):
 
       builder = GridOptionsBuilder.from_dataframe(df1)
       builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
-      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=110)
-      builder.configure_column("COL2", header_name="", editable=False,width=40)
+      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False)
+      builder.configure_column("COL2", header_name="", editable=False)
 
       go1 = builder.build()
 
@@ -195,8 +197,8 @@ if st.sidebar.button('Procurar'):
       columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
       allow_unsafe_jscode=True)
 
-    with col3:
-      st.subheader(f'🥅 Campeonatos')
+    with tab4:
+      #st.subheader(f'🥅 Campeonatos')
       champs = [[x,camp.count(x)] for x in set(camp)]
 
       tc1=[]
@@ -213,8 +215,8 @@ if st.sidebar.button('Procurar'):
 
       builder = GridOptionsBuilder.from_dataframe(df2)
       builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
-      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=100)
-      builder.configure_column("COL2", header_name="", editable=False,width=50)
+      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False)
+      builder.configure_column("COL2", header_name="", editable=False)
 
       go2 = builder.build()
 

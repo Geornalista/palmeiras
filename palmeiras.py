@@ -17,7 +17,7 @@ tab1,tab2 = st.tabs([
           "📊 Estatísticas",
           "⚽️ Escalações"])
 
-file = 'palmeiras1.csv'
+file = 'palmeiras.csv'
 df_jogos = pd.read_csv(file,sep=';',skipinitialspace=True)
 
 df1 = df_jogos[['Data','Campeonato','Estadio','Mandante','Visitante','GOLS_H','GOLS_A','LINK']]

@@ -184,8 +184,8 @@ if st.sidebar.button('Procurar'):
 
       builder = GridOptionsBuilder.from_dataframe(df1)
       builder.configure_default_column(min_column_width=5,filterable=False,editable=False,sortable=False,resizable=False,suppressMenu=True)
-      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=100)
-      builder.configure_column("COL2", header_name="", editable=False,width=50)
+      builder.configure_column("COL1", header_name="DADOS GERAIS", editable=False,width=130)
+      builder.configure_column("COL2", header_name="", editable=False,width=20)
 
       go1 = builder.build()
 

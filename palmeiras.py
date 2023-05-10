@@ -46,8 +46,74 @@ df = pd.DataFrame (jogadores, columns = ['JOGADORES'])
 df = df[df['JOGADORES'].notna()]
 lista_jogadores = df['JOGADORES'].drop_duplicates().sort_values().tolist()
 
+campeonatos = df1['Campeonato'].unique()
+df = pd.DataFrame (campeonatos, columns = ['CAMPEONATO'])
+df = df[df['CAMPEONATO'].notna()]
+lista_campeonato = df['CAMPEONATO'].drop_duplicates().sort_values().tolist()
+
+estadios = df1['Estadio'].unique()
+df = pd.DataFrame (estadios, columns = ['ESTADIO'])
+df = df[df['ESTADIO'].notna()]
+lista_estadio = df['ESTADIO'].drop_duplicates().sort_values().tolist()
+
+mandante = list(df1['Mandante'].unique())
+visitante = list(df1['Visitante'].unique())
+for item in visitante:
+  if  not item in mandante:
+    mandante.append(item)
+adversarios = list(filter(lambda x: x!= 'Palestra Italia', mandante))
+adversarios = list(filter(lambda x: x!= 'Palmeiras', adversarios))
+df = pd.DataFrame (adversarios, columns = ['ADVERSARIOS'])
+df = df[df['ADVERSARIOS'].notna()]
+lista_adv = df['ADVERSARIOS'].drop_duplicates().sort_values().tolist()
+
 st.sidebar.header('Escolha os jogadores')
 escalacao = st.sidebar.multiselect('Escolha os jogadores que deseja pesquisar',lista_jogadores)
+C = st.sidebar.checkbox('Escolha o Campeonato')
+if C:
+  campeonatos = st.sidebar.multiselect('Escolha o campeonato que deseja pesquisar',lista_campeonato,max_selections=1)
+  if len(campeonatos) > 0:
+    campeonatos = campeonatos[0]
+  else:
+    campeonatos = ''
+else:
+  campeonatos = ''
+
+E = st.sidebar.checkbox('Escolha o Estádio')
+if E:
+  estadios = st.sidebar.multiselect('Escolha o estádio que deseja pesquisar',lista_estadio,max_selections=1)
+  if len(estadios) > 0:
+    estadios = estadios[0]
+  else:
+    estadios = ''
+else:
+  estadios = ''
+
+A = st.sidebar.checkbox('Escolha o Adversário')
+if A:
+  adversarios = st.sidebar.multiselect('Escolha o adversario que deseja pesquisar',lista_adv,max_selections=1)
+  if len(adversarios) > 0:
+    adversarios = adversarios[0]
+  else:
+    adversarios = ''
+else:
+  adversarios = ''
+
+def selecao(campeonato,estadio,adversario):
+  if adversario != '':
+    df_1 = df1[(df1['Mandante'] == adversario) | (df1['Visitante'] == adversario)]
+  else:
+    df_1 = df1
+  if campeonato != '':
+    df_2 = df_1[(df_1['Campeonato'] == campeonato)]
+  else:
+    df_2 = df_1
+  if  estadio != '':
+    df_3 = df_2[(df_2['Estadio'] == estadio)]
+  else:
+    df_3 = df_2
+    
+  return df_3
 
 def result(i):
   if lista_datas[i][5] > lista_datas[i][6]:
@@ -87,7 +153,8 @@ def busca_escalacao(jogadores):
   GM0 = 0
   GS0 = 0
 
-  for i in range(njogos):
+  #for i in range(njogos):
+  for i in lista:
     if set(jogadores).issubset(lista_jogos[i]):
       flag=1
       res1,adv1,palm1,GM1,GS1 = result(i)
@@ -119,6 +186,9 @@ def busca_escalacao(jogadores):
       st.write(texto)
 
   return(camp,estad,res,adv,palm,GM0,GS0)
+
+df_selecao = selecao(campeonatos,estadios,adversarios)
+lista = df_selecao['Partida'].tolist()
 
 if st.sidebar.button('Procurar'):
   camp,estad,res,adv,palm,GM,GS = busca_escalacao(escalacao)

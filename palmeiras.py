@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode,ColumnsAutoSizeMode
+from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode
 
+# LAYOUT=========================================================================================
 st.set_page_config(
   page_title='ESCALAÇÕES DO PALMEIRAS',
   page_icon='⚽',
@@ -13,12 +14,17 @@ st.sidebar.header(
 
     """
 )
+container = st.container()
+lista_numeros = [numero for numero in range(1914, 2024)]
+ano1, ano2 = container.select_slider("Ano",lista_numeros,value=(1914, 2023))
+
 tab1,tab2,tab3,tab4,tab5 = st.tabs([
                   "📊 Dados Gerais",
                   "🥊 Adversários",
                   "🏟 Estádios",
                   "🥅 Campeonatos",
                   "⚽️ Escalações"])
+#==============================================================================================
 
 file = 'palmeiras.csv'
 df_jogos = pd.read_csv(file,sep=';',skipinitialspace=True)
@@ -26,6 +32,7 @@ df_jogos = pd.read_csv(file,sep=';',skipinitialspace=True)
 df1 = df_jogos[['Data','Campeonato','Estadio','Mandante','Visitante','GOLS_H','GOLS_A','LINK']]
 df1.index = df1.index.set_names(['Partida'])
 df1.reset_index(inplace=True)
+df1['ANO'] = pd.to_datetime(df1['Data'], dayfirst=True)
 
 lista_datas = df1.set_index('Partida').T.to_dict('list')
 
@@ -99,11 +106,15 @@ if A:
 else:
   adversarios = ''
 
-def selecao(campeonato,estadio,adversario):
+def selecao(campeonato,estadio,adversario,ano1,ano2):
+  txt1 = f'{ano1}-01-01'
+  txt2 = f'{ano2}-06-08' 
+  df11 = df1[df1['ANO'].isin(pd.date_range(txt1,txt2))]
+
   if adversario != '':
-    df_1 = df1[(df1['Mandante'] == adversario) | (df1['Visitante'] == adversario)]
+    df_1 = df11[(df11['Mandante'] == adversario) | (df11['Visitante'] == adversario)]
   else:
-    df_1 = df1
+    df_1 = df11
   if campeonato != '':
     df_2 = df_1[(df_1['Campeonato'] == campeonato)]
   else:
@@ -175,7 +186,7 @@ def busca_escalacao(jogadores):
     jogo = [s.title() for s in list(lista_jogos[item]) if str(s) != 'nan']
     jogo = [x.replace('-', ' ') for x in jogo]
     with tab5:
-      st.subheader(f'[Partida {item+1}: {lista_datas[item][0]} {lista_datas[item][3].title()} {lista_datas[item][5]} X {lista_datas[item][6]} {lista_datas[item][4].title()} ({lista_datas[item][1].title()} - Estádio: {lista_datas[item][2].title()})]({lista_datas[item][-1]}) ')
+      st.subheader(f'[Partida {item+1}: {lista_datas[item][0]} {lista_datas[item][3].title()} {lista_datas[item][5]} X {lista_datas[item][6]} {lista_datas[item][4].title()} ({lista_datas[item][1].title()} - Estádio: {lista_datas[item][2].title()})]({lista_datas[item][-2]}) ')
 
     for jogador in jogo:
       if jogador == jogo[0]:
@@ -187,7 +198,7 @@ def busca_escalacao(jogadores):
 
   return(camp,estad,res,adv,palm,GM0,GS0)
 
-df_selecao = selecao(campeonatos,estadios,adversarios)
+df_selecao = selecao(campeonatos,estadios,adversarios,ano1,ano2)
 lista = df_selecao['Partida'].tolist()
 
 if st.sidebar.button('Procurar'):

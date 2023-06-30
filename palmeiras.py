@@ -109,7 +109,8 @@ else:
 def selecao(campeonato,estadio,adversario,ano1,ano2):
   txt1 = f'{ano1}-01-01'
   txt2 = f'{ano2}-12-31' 
-  df11 = df1[df1['ANO'].isin(pd.date_range(txt1,txt2))]
+  #df11 = df1[df1['ANO'].isin(pd.date_range(txt1,txt2))]
+  df11 = df1
 
   if adversario != '':
     df_1 = df11[(df11['Mandante'] == adversario) | (df11['Visitante'] == adversario)]

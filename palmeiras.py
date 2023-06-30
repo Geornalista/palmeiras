@@ -16,7 +16,7 @@ st.sidebar.header(
 )
 container = st.container()
 lista_numeros = [numero for numero in range(1914, 2024)]
-ano1, ano2 = container.select_slider("Ano",lista_numeros,value=(1914, 2023))
+ano1, ano2 = container.select_slider("Ano",lista_numeros,value=(1914, 2024))
 
 tab1,tab2,tab3,tab4,tab5 = st.tabs([
                   "📊 Dados Gerais",
